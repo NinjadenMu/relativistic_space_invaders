@@ -249,6 +249,7 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
 
     game_over = False
+    instructions_over = False
     dead = False
 
     keys_down = {'L': False, 'R': False, 'SPACE': False}
@@ -264,7 +265,32 @@ if __name__ == '__main__':
         credit = font_small.render('Jaden Mu', True, (4, 217, 255))
         screen.blit(credit, (900, 40))
 
-        if not dead:
+        if not instructions_over:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    game_over = True
+
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        instructions_over = True
+
+            instructions_text1 = font_medium.render('USE ARROW KEYS TO MOVE. USE SPACE TO SHOOT.', True, (4, 217, 255))
+            instructions_rect1 = instructions_text1.get_rect()
+            instructions_rect1.center = (screen_width // 2, screen_height // 2 - 50)
+
+            instructions_text2 = font_small.render('THE FASTER YOU MOVE, THE SLOWER AND THINNER EVERYTHING ELSE GETS.', True, (4, 217, 255))
+            instructions_rect2 = instructions_text2.get_rect()
+            instructions_rect2.center = (screen_width // 2, screen_height // 2)
+            
+            instructions_text3 = font_medium.render('HIT SPACE TO START.', True, (4, 217, 255))
+            instructions_rect3 = instructions_text3.get_rect()
+            instructions_rect3.center = (screen_width // 2, screen_height // 2 + 50)
+
+            screen.blit(instructions_text1, instructions_rect1)
+            screen.blit(instructions_text2, instructions_rect2)
+            screen.blit(instructions_text3, instructions_rect3)
+
+        if not dead and instructions_over:
             screen.blit(shield_img, (10, 10))
             for i in range(1, player.max_shield + 1):
                 if i < math.floor(player.shield) + 1:
@@ -347,15 +373,39 @@ if __name__ == '__main__':
 
             player.game_tick(**player_updates)
 
-            if player.shield <= 0:
+            if player.shield <= 0 or len(enemies) == 0:
                 dead = True
 
-
-        if dead:
-            end_text = font_big.render('YOUR SHIP WAS DESTROYED', True, (4, 217, 255))
+        if dead and instructions_over:
+            end_text = font_big.render('GAME OVER', True, (4, 217, 255))
             end_text_rect = end_text.get_rect()
             end_text_rect.center = (screen_width // 2, screen_height // 2)
 
+            end_instructions = font_medium.render('HIT SPACE TO PLAY AGAIN', True, (4, 217, 255))
+            end_instructions_rect = end_instructions.get_rect()
+            end_instructions_rect.center = (screen_width // 2, screen_height // 2 + 50)
+
             screen.blit(end_text, end_text_rect)
+            screen.blit(end_instructions, end_instructions_rect)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                        game_over = True
+
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        keys_down = {'L': False, 'R': False, 'SPACE': False}
+                        
+                        player_inputs = {'position': screen_width // 2 - player_dim[0] // 2, "max_velocity": 9, "drag_constant": 0.01, "shield": 10, "max_shield": 10, "health": 3, "max_health": 3, "bounds": [0, screen_width - player_dim[0]], "dimensions": player_dim, "image": player_img}
+                        player = Ship(**player_inputs)
+                        
+                        enemies = []
+                        for i in range(num_enemies):
+                            enemy_inputs = {'position': [i * (enemy_dim[0] + 30) + (screen_width - num_enemies * (enemy_dim[0] + 30)) // 2, 250], 'health': 1, 'dimensions': enemy_dim, 'image': enemy_img}
+                            enemies.append(Enemy(**enemy_inputs))
+
+                        particle_beams = []
+
+                        dead = False
 
         pygame.display.update()
