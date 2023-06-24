@@ -34,10 +34,10 @@ Observe Length contraction in action - notice how the aliens and bullets appear 
 <img width="600" alt="image" src="https://github.com/NinjadenMu/relativistic_space_invaders/assets/68563142/2614262a-882d-437d-a960-85f5e5917673">
 <br>
 <br>
-### Realistic Spacecraft Motion in Nearly Frictionless Space
+## Realistic Spacecraft Motion in Nearly Frictionless Space
 In addition to realistic relativistic effects, the player-controlled spaceship also obeys Newton's laws and basic kinematics.  Unlike the original Space Invaders, the player can't instantly start and stop.  Instead, momentum is conserved and the player must slowly accelerate to their max speed.
 <br>
-### Gameplay
+## Gameplay
 The player can choose between 4 difficulty settings (Including the YIKUAN difficulty, made for those who complain that games are too easy).  The difficulty settings vary the amount of health the player starts with, how fast they regain their shield, how fast the enemy regains their shield, and how fast the enemy moves and shoots.
 <br>
 <img width="600" alt="image" src="https://github.com/NinjadenMu/relativistic_space_invaders/assets/68563142/d03892dc-b060-4117-a70e-38766457a2f0">
