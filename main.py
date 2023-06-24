@@ -5,15 +5,15 @@ import relativity
 
 from copy import copy
 
-class Entity:
+class Entity: #Base class containing attributes and collision detection utils all entities need
     def __init__(self, position, bounds_rect, damage, dimensions, image):
-        self.position = position
+        self.position = position #center position of entity image
 
-        self.bounds_rect = bounds_rect
+        self.bounds_rect = bounds_rect #rect of screen
 
         self.damage = damage
 
-        self.dimensions = dimensions
+        self.dimensions = dimensions #dimensions of entity image
 
         self.image = image
 
@@ -45,16 +45,16 @@ class Player(Entity):
 
         self.acceleration = 0
 
-        self.tilt = 0
+        self.tilt = 0 #tilt reveals direction of acceleration
 
         self.drag_constant = drag_constant
 
-        self.reload = reload
+        self.reload = reload #minimum time between shots
         self.last_shot_time = 0
 
         self.shield = shield
         self.max_shield = max_shield
-        self.shield_regen_time = shield_regen_time
+        self.shield_regen_time = shield_regen_time #time to regen one shield bar
         self.last_regen_time = 0
 
         self.shield_img = pygame.transform.scale(pygame.image.load('assets/shield.png'), (40, 42))
@@ -62,23 +62,23 @@ class Player(Entity):
         self.lost_shield_bar_img = pygame.transform.scale(pygame.image.load('assets/lost_shield_bar.png'), (16, 42)) 
 
     def update_motion(self):
-        if abs(self.velocity + self.acceleration) >= self.max_velocity:
-            if self.velocity + self.acceleration < 0:
-                self.velocity = -self.max_velocity
+        if abs(self.velocity + self.acceleration) >= self.max_velocity: #if velocity exceed max velocity
+            if self.velocity + self.acceleration < 0: #if velocity will be in the negative direction
+                self.velocity = -self.max_velocity #set velocity to -max velocity
                 self.acceleration = 0
-            else:
+            else: #if velocity in positive direction
                 self.velocity = self.max_velocity
                 self.acceleration = 0
         else:
             self.velocity += self.acceleration
 
-        self.velocity -= self.drag_constant * self.velocity
+        self.velocity -= self.drag_constant * self.velocity #slow down from drag
 
         self.position[0] += self.velocity
 
-        if not self.in_bounds():
-            self.position[0] -= self.velocity
-            self.position[0] -= (self.position[0] - self.bounds_rect.center[0]) / abs(self.position[0] - self.bounds_rect.center[0])
+        if not self.in_bounds(): #if out of bounds after moving
+            self.position[0] -= self.velocity #undo movement
+            self.position[0] -= (self.position[0] - self.bounds_rect.center[0]) / abs(self.position[0] - self.bounds_rect.center[0]) #get off edge by moving +-1 depending on which way player was out of bounds
             self.velocity = 0
 
 
@@ -87,20 +87,20 @@ class Player(Entity):
             self.shield -= damage_taken
 
         else:
-            if self.shield < self.max_shield and pygame.time.get_ticks() - self.last_regen_time > self.shield_regen_time:
+            if self.shield < self.max_shield and pygame.time.get_ticks() - self.last_regen_time > self.shield_regen_time: #if time since last regen exceeds time to regen
                 self.shield += 1
-                self.last_regen_time = pygame.time.get_ticks()
+                self.last_regen_time = pygame.time.get_ticks() #increase shield by 1, change last regen time to now
 
-        if self.shield <= 0:
-            self.exists = False
+        if self.shield <= 0: 
+            self.exists = False #die if shield is gone
 
     def shoot(self):
         if pygame.time.get_ticks() - self.last_shot_time > self.reload:
-            self.shooting = True
-            self.last_shot_time = pygame.time.get_ticks()
+            self.shooting = True 
+            self.last_shot_time = pygame.time.get_ticks() #shoot if time since last shot is greater than reload time, update last shot time to now
 
     def render(self, screen):
-        if self.tilt < 0:
+        if self.tilt < 0: #tilt ship a max of 12 degrees in either direction depending on acceleration
             self.tilt = max(-12, self.tilt - 1.8 * self.acceleration - 0.05 * self.tilt)
         else:
             self.tilt = min(12, self.tilt - 1.8 * self.acceleration - 0.05 * self.tilt)
@@ -109,17 +109,17 @@ class Player(Entity):
 
         screen.blit(self.shield_img, (10, 10))
         for i in range(1, self.max_shield + 1):
-            if i < self.shield + 1:
-                screen.blit(self.shield_bar_img, (42 + 16 * i, 10))
+            if i < self.shield + 1: #if ith bar is less than the shield the ship has + 1
+                screen.blit(self.shield_bar_img, (42 + 16 * i, 10)) #display shield bar
             else:
-                screen.blit(self.lost_shield_bar_img, (42 + 16 * i, 10))
+                screen.blit(self.lost_shield_bar_img, (42 + 16 * i, 10)) #otherwise display lost shield bar
 
     def game_tick(self, acceleration, damage_taken, shooting, screen):
         self.shooting = False
 
         self.acceleration = acceleration
 
-        self.rect = self.scaled_image.get_rect(center = self.position)
+        self.rect.center = self.position #reset rect center after movement
 
         self.update_motion()
 
@@ -144,13 +144,13 @@ class Enemy(Entity):
         self.shield_regen_time = shield_regen_time
         self.last_shield_regen = 0
 
-        self.shot_probability = shot_probability
+        self.shot_probability = shot_probability #probability per game tick of firing (very small because there are 30 ticks per second)
 
     def update_motion(self, gamma):
-        if abs(self.initial_position[0] - self.position[0]) < 60:
-            self.position[0] += + self.velocity / gamma
+        if abs(self.initial_position[0] - self.position[0]) < 60: #if displacement is less than 60
+            self.position[0] += + self.velocity / gamma #scales velocity by time dilation factor gamma to appear slower
 
-        else:
+        else: #change directions if displacement is more than 60 to move 120 in the other direction (allows for cyclic motion)
             self.velocity *= -1
             self.position[0] += self.velocity
 
@@ -159,7 +159,7 @@ class Enemy(Entity):
             self.shield -= damage_taken
 
         else:
-            if self.shield < self.max_shield and pygame.time.get_ticks() - self.last_shield_regen > self.shield_regen_time * round(gamma):
+            if self.shield < self.max_shield and pygame.time.get_ticks() - self.last_shield_regen > self.shield_regen_time * round(gamma): #shield_regen_time scaled by gamma to be slower bc time dilation
                 self.shield += 1
 
                 self.last_shield_regen = pygame.time.get_ticks()
@@ -177,11 +177,11 @@ class Enemy(Entity):
     def game_tick(self, damage_taken, screen, gamma):
         self.shooting = False
 
-        self.relativistic_dimensions = [round(self.dimensions[0] / gamma), self.dimensions[1]]
+        self.relativistic_dimensions = [round(self.dimensions[0] / gamma), self.dimensions[1]] #scale dimensions for length contraction based on gamma
 
         self.relativistic_image = pygame.transform.scale(self.image, self.relativistic_dimensions)
 
-        self.rect.center = self.position
+        self.rect.center = self.position #reset rect center after moving
 
         self.update_motion(gamma)
 
@@ -289,7 +289,7 @@ class Game:
         self.hard_button = Button((self.screen_dimensions[0] // 2 - (self.button_dimensions[0] - 30), self.screen_dimensions[1] // 2 + (self.button_dimensions[1] + 110)), self.button_dimensions, 'HARD', self.font_medium, self.clicked_button_img, self.unclicked_button_img, self.start_level)
         self.yikuan_button  = Button((self.screen_dimensions[0] // 2 + (self.button_dimensions[0] - 30), self.screen_dimensions[1] // 2 + (self.button_dimensions[1] + 110)), self.button_dimensions, 'YIKUAN', self.font_medium, self.clicked_button_img, self.unclicked_button_img, self.start_level)
 
-        self.restart_button_depressed = False
+        self.restart_button_depressed = False #button is pressed down but not released (depressed)
         self.retry_button_depressed = False
         self.proceed_button_depressed = False
 
@@ -319,18 +319,18 @@ class Game:
         self.retry_button_depressed = False
         self.proceed_button_depressed = False
 
-        self.keys_down = {'K_LEFT': False, 'K_RIGHT': False, 'K_SPACE': False}
+        self.keys_down = {'K_LEFT': False, 'K_RIGHT': False, 'K_SPACE': False} #reset keys down - dict neccessary to store keys held down as keys held down don't register as event
         
-        player_inputs = {'position': [self.screen_dimensions[0] // 2, self.screen_dimensions[1] - 100], 'bounds_rect': self.bounds_rect, 'max_velocity': 9, 'drag_constant': 0.01, 'damage': 3, 'reload': 600, 'shield': 12 - self.difficulty * 2, 'max_shield': 12 - self.difficulty * 2, 'shield_regen_time': self.difficulty * 1000, 'dimensions': self.player_dimensions, 'image': pygame.image.load('assets/ship.png')}
+        player_inputs = {'position': [self.screen_dimensions[0] // 2, self.screen_dimensions[1] - 100], 'bounds_rect': self.bounds_rect, 'max_velocity': 9, 'drag_constant': 0.01, 'damage': 3, 'reload': 600, 'shield': 12 - self.difficulty * 2, 'max_shield': 12 - self.difficulty * 2, 'shield_regen_time': self.difficulty * 1000, 'dimensions': self.player_dimensions, 'image': pygame.image.load('assets/ship.png')} #player shield + regen changes based on difficulty
         self.player = Player(**player_inputs)
-        self.player_projectiles = []
+        self.player_projectiles = [] #initialize list for projectiles fired by player
 
-        additional_level_booster = 1
+        additional_level_booster = 1 #increases enemy shot probability to make game harder after level 6
         
-        if self.level < 6 and self.level % 2:
+        if self.level < 6 and self.level % 2: #if level less than 6 add a rows on every other level: no more rows after level 6 because rows won't fit
             self.enemy_rows += 1
         
-        if self.level >= 6:
+        if self.level >= 6: #additional_level_booster only has effect if level >= 6, otherwise just 1
             additional_level_booster += (self.level - 5) / 10
 
         self.enemies = []
@@ -338,15 +338,15 @@ class Game:
             enemy_shield = 3
             enemy_img = self.enemy_img
 
-            if self.level // 2 - i:
+            if self.level // 2 - i: #rows existing on the previous level (rows not added this level) become strong aliens
                 enemy_shield = 5
                 enemy_img = self.strong_enemy_img
             
             for j in range(10):
-                enemy_inputs = {'position': [j * (self.enemy_dimensions[0] + 40) + (self.screen_dimensions[0] - 10 * (self.enemy_dimensions[0] + 40)) // 2 + 40, self.screen_dimensions[1] // 2 - (self.enemy_dimensions[1] + 20) * i], 'velocity': self.difficulty / 1.5, 'bounds_rect': self.bounds_rect, 'damage': 3, 'shield': enemy_shield, 'max_shield': enemy_shield, 'shield_regen_time': (4 - self.difficulty / 2) * 1000, 'damage': 3, 'shot_probability': additional_level_booster * (0.0033 + self.difficulty / 2000), 'dimensions': [50, 50], 'image': enemy_img}
+                enemy_inputs = {'position': [j * (self.enemy_dimensions[0] + 40) + (self.screen_dimensions[0] - 10 * (self.enemy_dimensions[0] + 40)) // 2 + 40, self.screen_dimensions[1] // 2 - (self.enemy_dimensions[1] + 20) * i], 'velocity': self.difficulty / 1.5, 'bounds_rect': self.bounds_rect, 'damage': 3, 'shield': enemy_shield, 'max_shield': enemy_shield, 'shield_regen_time': (4 - self.difficulty / 2) * 1000, 'damage': 3, 'shot_probability': additional_level_booster * (0.0033 + self.difficulty / 2000), 'dimensions': [50, 50], 'image': enemy_img} #enemy strengths based on functions of difficulty as well as level
                 self.enemies.append(Enemy(**enemy_inputs))
 
-        self.enemy_projectiles = []
+        self.enemy_projectiles = [] #initialize list of projectiels fired by enemy (can only hit player)
 
     def intro_screen(self):
         easy_button_clicked = False
@@ -484,7 +484,7 @@ class Game:
                     restart_button_clicked = True
 
                 elif self.retry_button.image_rect.collidepoint(pos):
-                    if self.level % 2:
+                    if self.level % 2 and self.level < 6: #subtract out a row in these conditions because start_level will add it back
                         self.enemy_rows -= 1
 
                     self.level -= 1
@@ -501,7 +501,7 @@ class Game:
     def game_tick(self):
         self.screen.blit(self.bg_img, (0, 0))
 
-        player_updates = {'acceleration': 0, 'damage_taken': 0, 'shooting': False, 'screen': self.screen}
+        player_updates = {'acceleration': 0, 'damage_taken': 0, 'shooting': False, 'screen': self.screen} #inputs to player.game_tick() function
     
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -536,28 +536,28 @@ class Game:
         if self.keys_down['K_SPACE']:
             player_updates['shooting'] = True
 
-        self.enemies = [enemy for enemy in self.enemies if enemy.exists]
-        self.player_projectiles = [projectile for projectile in self.player_projectiles if projectile.exists]
+        self.enemies = [enemy for enemy in self.enemies if enemy.exists] #delete dead enemies
+        self.player_projectiles = [projectile for projectile in self.player_projectiles if projectile.exists] #delete projectiles out of bounds or projectiles that have already hit somethign
 
         for enemy in self.enemies:
             enemy_velocity = 1
-            combined_velocity = relativity.combined_velocity_parallel(enemy_velocity / 10, self.player.velocity / 10)
+            combined_velocity = relativity.combined_velocity_parallel(enemy_velocity / 10, self.player.velocity / 10) #enemies are moving parallel relative to player
             gamma = relativity.gamma(combined_velocity)
 
             enemy_updates = {'damage_taken': 0, 'screen': self.screen, 'gamma': gamma}
 
-            for projectile in self.player_projectiles:
+            for projectile in self.player_projectiles: #check each projectile to see if it hits the enemy
                 if enemy.is_hit(projectile.rect):
                     enemy_updates['damage_taken'] = projectile.damage
                     projectile.exists = False
 
-            enemy.game_tick(**enemy_updates)
+            enemy.game_tick(**enemy_updates) #game_tick for enemy (renders enemy, updates shield, positon, etc.)
 
-            if enemy.shooting: 
+            if enemy.shooting:  #if enemy shooting create projectile and append to self.enemy_projectiles
                 self.enemy_projectiles.append(Projectile(copy(enemy.position), self.bounds_rect, 3, enemy.damage, self.projectile_dimensions, self.enemy_projectile_img))
 
-        for projectile in self.player_projectiles:
-                combined_velocity = relativity.combined_velocity_perpendicular(projectile.velocity / 10, self.player.velocity / 10)
+        for projectile in self.player_projectiles: #game_tick for all player projectiles
+                combined_velocity = relativity.combined_velocity_perpendicular(projectile.velocity / 10, self.player.velocity / 10) #projectile velocity is perpendicular to player's
                 gamma = relativity.gamma(combined_velocity)
 
                 projectile.game_tick(self.screen, gamma)
@@ -565,7 +565,7 @@ class Game:
         self.enemy_projectiles = [projectile for projectile in self.enemy_projectiles if projectile.exists]
 
         for projectile in self.enemy_projectiles:
-            if self.player.is_hit(projectile.rect):
+            if self.player.is_hit(projectile.rect): #check enemy projectiles for collision with player
                 player_updates['damage_taken'] = projectile.damage
                 projectile.exists = False
 
@@ -574,6 +574,8 @@ class Game:
             projectile.game_tick(self.screen, gamma)
 
         self.player.game_tick(**player_updates)
+
+        #Heads Up Display with general text info
 
         title = self.font_medium.render('Relativistic Space Invaders', True, (4, 217, 255))
         screen.blit(title, (610, 10))
@@ -644,13 +646,3 @@ if __name__ == '__main__':
         pygame.display.update()
 
     pygame.quit()
-
-
-
-
-
-    
-
-    
-
-    
