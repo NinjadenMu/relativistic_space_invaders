@@ -396,7 +396,7 @@ class Game:
                     yikuan_button_clicked = True
                     self.difficulty = 5
 
-        instructions_text1 = self.font_medium.render('USE ARROW KEYS TO MOVE. USE SPACE TO SHOOT.', True, (4, 217, 255))
+        instructions_text1 = self.font_small.render('USE ARROW KEYS TO MOVE. USE SPACE TO SHOOT. RED ALIENS ARE STRONGER AND CAN REGAIN HEALTH', True, (4, 217, 255))
         instructions_rect1 = instructions_text1.get_rect()
         instructions_rect1.center = (self.screen_dimensions[0] // 2, self.screen_dimensions[1] // 2 - 150)
 
@@ -404,7 +404,7 @@ class Game:
         instructions_rect2 = instructions_text2.get_rect()
         instructions_rect2.center = (self.screen_dimensions[0] // 2, self.screen_dimensions[1] // 2 - 100)
             
-        instructions_text3 = self.font_medium.render('CHOOSE YOUR LEVEL TO START.', True, (4, 217, 255))
+        instructions_text3 = self.font_big.render('CHOOSE YOUR LEVEL TO START.', True, (4, 217, 255))
         instructions_rect3 = instructions_text3.get_rect()
         instructions_rect3.center = (self.screen_dimensions[0] // 2, self.screen_dimensions[1] // 2 - 40)
 
@@ -578,6 +578,21 @@ class Game:
 
         level_text = self.font_small.render('LEVEL: ' + str(self.level), True, (4, 217, 255))
         screen.blit(level_text, (20, 60))
+
+        if self.difficulty == 1:
+            difficulty = 'EASY'
+
+        elif self.difficulty == 2:
+            difficulty = 'MEDIUM'
+
+        elif self.difficulty == 3:
+            difficulty = 'HARD'
+
+        else:
+            difficulty = 'YIKUAN'
+
+        difficulty_text = self.font_small.render('DIFFICULTY: ' + difficulty, True, (4, 217, 255))
+        screen.blit(difficulty_text, (120, 60))
 
         if self.player.shooting:
             self.player_projectiles.append(Projectile(copy(self.player.position), self.bounds_rect, -3, self.player.damage, self.projectile_dimensions, self.player_projectile_img))
