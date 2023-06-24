@@ -325,8 +325,13 @@ class Game:
         self.player = Player(**player_inputs)
         self.player_projectiles = []
 
+        additional_level_booster = 1
+        
         if self.level < 6 and self.level % 2:
             self.enemy_rows += 1
+        
+        if self.level >= 6:
+            additional_level_booster += (self.level - 5) / 10
 
         self.enemies = []
         for i in range(self.enemy_rows):
@@ -338,7 +343,7 @@ class Game:
                 enemy_img = self.strong_enemy_img
             
             for j in range(10):
-                enemy_inputs = {'position': [j * (self.enemy_dimensions[0] + 40) + (self.screen_dimensions[0] - 10 * (self.enemy_dimensions[0] + 40)) // 2 + 40, self.screen_dimensions[1] // 2 - (self.enemy_dimensions[1] + 20) * i], 'velocity': self.difficulty / 1.5, 'bounds_rect': self.bounds_rect, 'damage': 3, 'shield': enemy_shield, 'max_shield': enemy_shield, 'shield_regen_time': (4 - self.difficulty / 2) * 1000, 'damage': 3, 'shot_probability': 0.0033 + self.difficulty / 2000, 'dimensions': [50, 50], 'image': enemy_img}
+                enemy_inputs = {'position': [j * (self.enemy_dimensions[0] + 40) + (self.screen_dimensions[0] - 10 * (self.enemy_dimensions[0] + 40)) // 2 + 40, self.screen_dimensions[1] // 2 - (self.enemy_dimensions[1] + 20) * i], 'velocity': self.difficulty / 1.5, 'bounds_rect': self.bounds_rect, 'damage': 3, 'shield': enemy_shield, 'max_shield': enemy_shield, 'shield_regen_time': (4 - self.difficulty / 2) * 1000, 'damage': 3, 'shot_probability': additional_level_booster * (0.0033 + self.difficulty / 2000), 'dimensions': [50, 50], 'image': enemy_img}
                 self.enemies.append(Enemy(**enemy_inputs))
 
         self.enemy_projectiles = []
