@@ -1,8 +1,8 @@
 # Relativistic Space Invaders
-Relativistic Space Invaders is a spin-off of the classic space invaders game (and my AP Physics C final project).  The player controls a ship capable of speeds up to an 0.9c, so the effects of special relativity can be observed.  
-<br>
+Relativistic Space Invaders is a spin-off of the classic space invaders game (and my AP Physics C final project).  The player controls a ship capable of speeds up to 0.9c, so the effects of special relativity can be observed.  
 You can view the gameplay of level 1 here:
 https://drive.google.com/file/d/1j__0-WCqRcV4ePAUkw7cJ4bmUe_t6P_u/view?usp=sharing
+<br>
 <br>
 The relativistic effects are rendered by treating the player's ship as a stationary observer with everything else moving relative to it.  Lorentz time dilation and length contraction follow the exact mathematical models a real-world object would.  
 <br>
