@@ -9,7 +9,6 @@ Time Dilation and Length Contraction Formulas
 <br>
 Velocity Addition Magnitude Formulas:
 <br>
-<br>
 Parallel:
 <br>
 <img width="363" alt="image" src="https://github.com/NinjadenMu/relativistic_space_invaders/assets/68563142/d448a753-f5ec-4cd6-8433-2a1783c5c54b">
