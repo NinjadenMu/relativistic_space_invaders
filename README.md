@@ -28,12 +28,12 @@ In addition to realistic relativistic effects, the player-controlled spaceship a
 <br>
 The player can choose between 4 difficulty settings (Including the YIKUAN difficulty, made for those who complain that games are too easy).  The difficulty settings vary the amount of health the player starts with, how fast they regain their shield, how fast the enemy regains their shield, and how fast the enemy moves and shoots.
 <br>
-<img width="848" alt="image" src="https://github.com/NinjadenMu/relativistic_space_invaders/assets/68563142/333e9dde-a9d9-435c-9e2d-20991a3854b5">
+<img width="848" alt="image" src="https://github.com/NinjadenMu/relativistic_space_invaders/assets/68563142/d03892dc-b060-4117-a70e-38766457a2f0">
 <br>
 <br>
 The player will then be able to play through an infinite number of procedurally generated levels that gradually up the difficulty by adding new aliens, upgrading existing aliens, or adding more rows of aliens. 
 <br>
-<img width="848" alt="image" src="https://github.com/NinjadenMu/relativistic_space_invaders/assets/68563142/d03892dc-b060-4117-a70e-38766457a2f0">
+<img width="848" alt="image" src="https://github.com/NinjadenMu/relativistic_space_invaders/assets/68563142/333e9dde-a9d9-435c-9e2d-20991a3854b5">
 <br>
 
 
