@@ -1,10 +1,9 @@
 # Relativistic Space Invaders
 Relativistic Space Invaders is a spin-off of the classic space invaders game (and my AP Physics C final project).  The player controls a ship capable of speeds up to 0.9c, so the effects of special relativity can be observed.  
 <br>
-You can play it yourself online here (May take 10-20 seconds to load and become laggy at higher levels):
-https://replit.com/@JadenMu1/relativisticspaceinvaders
+<img width="600" alt="image" src="https://github.com/NinjadenMu/relativistic_space_invaders/assets/68563142/333e9dde-a9d9-435c-9e2d-20991a3854b5">
 <br>
-Or download this repo and run main.py for better performance
+You can play it yourself by cloning this repo and running main.py
 <br>
 Or view the gameplay here:
 https://drive.google.com/file/d/1j__0-WCqRcV4ePAUkw7cJ4bmUe_t6P_u/view?usp=sharing
@@ -12,7 +11,7 @@ https://drive.google.com/file/d/1j__0-WCqRcV4ePAUkw7cJ4bmUe_t6P_u/view?usp=shari
 ## Special Relativity
 The relativistic effects are rendered by treating the player's ship as a stationary observer with everything else moving relative to it.  Lorentz time dilation and length contraction follow the exact mathematical models a real-world object would.  
 <br>
-The relative velocities between entities, which the time dilation and length contraction formulas need, are also modeled by the real-world relativistic velocity addition magnitude formulas (velocities near the speed of light can't simply be added - otherwise, a ball thrown at 0.3c from a train cart moving at 0.8c would have a velocity of 1.1c).  Because the player and the aliens move along parallel lines, we know their direction is simply parallel to the line they move along (direction is important because length contraction only occurs in the direction of relative velocity).  However, because the velocity vectors between the player and the projectiles aren't parallel or antiparallel, there's no easy way to calculate the direction of their relative velocity vector.  Therefore, the effects are rendered as if the direction is parallel to the line of motion of the player, even though this is not strictly physically accurate.
+The relative velocities between entities, which the time dilation and length contraction formulas need, are also modeled by the real-world relativistic velocity addition magnitude formulas (velocities near the speed of light can't simply be added - otherwise, a ball thrown at 0.3c from a train cart moving at 0.8c would have a velocity of 1.1c).  Because the player and the aliens move along parallel lines, we know their direction is simply parallel to the line they move along (direction is important because length contraction only occurs in the direction of relative velocity).  However, the velocity vectors between the player and the projectiles aren't parallel or antiparallel - nonetheless, the effects are rendered as if the direction is parallel to the line of motion of the player, even though this is not strictly physically accurate.
 <br>
 #### Time Dilation and Length Contraction Formulas
 <img width="363" alt="image" src="https://github.com/NinjadenMu/relativistic_space_invaders/assets/68563142/656eea02-d364-4f9b-b143-f82921d33ae5">
